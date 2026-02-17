@@ -13,7 +13,7 @@ const Nav = () => {
 
   return (
     <div className="nav flex justify-between gap-6 mb-4">
-      <h1 className="head text-2xl font-bold"><Link href="/">Portfolio</Link></h1>
+      <h1 className="head text-2xl font-bold"><Link href="/">Mohit Portfolio</Link></h1>
       <nav className="main text-2xl font-bold flex gap-5">
         <h1><Link href="./About">About Me</Link></h1>
         <h1><Link href="./Skills">Skills</Link></h1>
