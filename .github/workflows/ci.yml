@@ -6,20 +6,30 @@ on:
       - main
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        
-      - name: Setup Node
-        uses: actions/setup-node@v4
+
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u mohit031 --password-stdin
+
+      - name: Build Docker Image
+        run: docker build -t mohit031/portfolio:latest .
+
+      - name: Push Docker Image
+        run: docker push mohit031/portfolio:latest
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          node-version: 18
-          
-      - name: Install Dependencies
-        run: npm install
-        
-      - name: build
-        run: npm run build
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            docker pull mohit031/portfolio:latest
+            docker stop portfolio || true
+            docker rm portfolio || true
+            docker run -d -p 80:3000 --name portfolio --restart always mohit031/portfolio:latest
